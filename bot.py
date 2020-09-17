@@ -17,10 +17,14 @@ SHEET = os.getenv("BASE_SHEET")
 
 #prefix for cmnds is !
 bot = commands.Bot(command_prefix='!')
+bot_user = bot.user
 
 #base sheet setting to env SHEET's first tab
 sh = gc.open(SHEET)
 worksheet = sh.get_worksheet(0)
+
+''' Events ''' 
+#None yet
 
 '''BEGIN COMMANDS
 ------------------------ 
@@ -95,9 +99,9 @@ async def switchtab(ctx,tab):
 
 #CREATE a column or row at given position
 @bot.command()
-async def createcells(ctx,direction,n,idx):
-    #
-    return ctx.send("Check back later for implementation of creating columns and rows with this command!")
+async def createcells(ctx,direction='column',n=1,idx=1):
+    #TBD
+    await ctx.send("Check back later for implementation of creating columns and rows with this command!")
 
 #UPDATE a given cell's value
 @bot.command()
@@ -105,6 +109,8 @@ async def editcell(ctx,cell,val):
     worksheet.update(cell, val)
     response = f"Cell at position {cell} of worksheet --{worksheet.title}-- changed value to {val}"
     await ctx.send(response)
+
+    
 
 #READ a given cell's value
 @bot.command()
