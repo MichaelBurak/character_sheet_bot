@@ -97,6 +97,7 @@ async def switchtab(ctx,tab):
 @bot.command()
 async def createcells(ctx,direction,n,idx):
     #
+    return ctx.send("Check back later for implementation of creating columns and rows with this command!")
 
 #UPDATE a given cell's value
 @bot.command()
