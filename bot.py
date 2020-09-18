@@ -17,14 +17,38 @@ SHEET = os.getenv("BASE_SHEET")
 
 #prefix for cmnds is !
 bot = commands.Bot(command_prefix='!')
-bot_user = bot.user
-
+timer_id= None
 #base sheet setting to env SHEET's first tab
 sh = gc.open(SHEET)
 worksheet = sh.get_worksheet(0)
 
+
 ''' Events ''' 
-#None yet
+@bot.listen()
+async def on_message(message):
+    '''This function is to parse out and extract arguments displayed 
+    from another bot on the server, particularly a timer. '''
+
+    starting_timer_str = "The timer is now set for"
+    timer_end_prompt = "To end the timer, type `t?stop`"
+
+    #fail gracefully if bot is sender 
+    global bot 
+    if message.author.id == bot.user.id:
+        return 
+
+    #need to remove "``" but otherwise grabs time
+    if message.content.startswith(starting_timer_str):
+        time_amt = message.content.split("for",1)[1].replace(timer_end_prompt,"").replace("`","").partition("When the timer ends")[0]
+
+    #store the characters after "it will send" in a variable as to dump into sheet
+    if message.content.find("it will send") == -1:
+        return
+    else:
+        #grabbing message and sheet dump of message and time with formatting to arbitrary cell
+        sent_msg_sanitized= message.content.partition("send")[2].partition("to")[0].replace("`","").replace('"', "")
+        worksheet.update("A1", f"Action:{sent_msg_sanitized}, taking: {time_amt}")
+
 
 '''BEGIN COMMANDS
 ------------------------ 
