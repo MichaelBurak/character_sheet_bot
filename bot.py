@@ -22,6 +22,9 @@ timer_id= None
 sh = gc.open(SHEET)
 worksheet = sh.get_worksheet(0)
 
+'''Helper functions'''
+def check(message, user):
+    return user == message.author and "has ended" in message.content
 
 ''' Events ''' 
 @bot.listen()
@@ -47,7 +50,15 @@ async def on_message(message):
     else:
         #grabbing message and sheet dump of message and time with formatting to arbitrary cell
         sent_msg_sanitized= message.content.partition("send")[2].partition("to")[0].replace("`","").replace('"', "")
+        #here is where it gets tricky, linking the mentioned user worksheet and the user
+        #message.mentions would be key here 
         worksheet.update("A1", f"Action:{sent_msg_sanitized}, taking: {time_amt}")
+        # confirmation = await bot.wait_for("message", check=check)
+        # if confirmation: 
+        #     worksheet.update("A1", f"Action:{sent_msg_sanitized}, taking: {time_amt}")
+        # else: 
+        #     return 
+
 
 
 '''BEGIN COMMANDS
