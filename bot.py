@@ -23,8 +23,9 @@ sh = gc.open(SHEET)
 worksheet = sh.get_worksheet(0)
 
 '''Helper functions'''
-def check(message, user):
-    return user == message.author and "has ended" in message.content
+# def check(message):
+#     print(f"Line 27 msg is {message}")
+#     return message == message.author and "has ended" in message.content
 
 ''' Events ''' 
 @bot.listen()
@@ -43,6 +44,8 @@ async def on_message(message):
     #need to remove "``" but otherwise grabs time
     if message.content.startswith(starting_timer_str):
         time_amt = message.content.split("for",1)[1].replace(timer_end_prompt,"").replace("`","").partition("When the timer ends")[0]
+        global timer_id
+        timer_id = message.author.id
 
     #store the characters after "it will send" in a variable as to dump into sheet
     if message.content.find("it will send") == -1:
@@ -52,14 +55,17 @@ async def on_message(message):
         sent_msg_sanitized= message.content.partition("send")[2].partition("to")[0].replace("`","").replace('"', "")
         #here is where it gets tricky, linking the mentioned user worksheet and the user
         #message.mentions would be key here 
-        worksheet.update("A1", f"Action:{sent_msg_sanitized}, taking: {time_amt}")
-        # confirmation = await bot.wait_for("message", check=check)
-        # if confirmation: 
-        #     worksheet.update("A1", f"Action:{sent_msg_sanitized}, taking: {time_amt}")
-        # else: 
-        #     return 
-
-
+        
+        #needs to check if forcibly stopped 
+        conf = await bot.wait_for('message', check=lambda message: message.author.id == timer_id and "has ended" in message.content)
+        
+        if conf: 
+            worksheet.update("A1", f"Action:{sent_msg_sanitized}, taking: {time_amt}")
+        
+        # deny = await bot.wait_for('message', check=lambda message: message.author.id == timer_id and "stopped forcibly" in message.content)
+        # if deny:
+        #     print("FORCEQUIT")
+        #     return
 
 '''BEGIN COMMANDS
 ------------------------ 
