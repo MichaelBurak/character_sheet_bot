@@ -133,6 +133,27 @@ async def switchtab(ctx,tab):
 #DELETE to clear whole tab
 #Wipe a sheet clear with option to duplicate to a hidden sheet a backup?
 
+# @bot.command()
+# async def cleartab(ctx):
+#     await ctx.send("Are you sure you want to clear this tab? Enter 'Y' or 'N'")
+#     @bot.event
+#     async def on_message(message):
+#         if message.author == bot.user:
+#             return
+#         if message.content == "Y":
+#             global worksheet
+#             worksheet.clear()
+#             await ctx.send("Confirmed clearing of tab")
+#             return
+#         elif message.content == "N":
+#             await ctx.send("Cancelled clearing of tab")
+#             return
+#         else:
+#             await ctx.send("You didn't enter a valid value, try 'Y' or 'N' ")
+#             return 
+
+
+
 #---Cells---
 
 #CREATE a cell?
