@@ -12,6 +12,7 @@ gc = gspread.oauth()
 
 #env var handling of token and testing Google Sheet
 load_dotenv()
+
 TOKEN = os.getenv('DISCORD_TOKEN')
 SHEET = os.getenv("BASE_SHEET")
 
@@ -23,9 +24,6 @@ sh = gc.open(SHEET)
 worksheet = sh.get_worksheet(0)
 
 '''Helper functions'''
-# def check(message):
-#     print(f"Line 27 msg is {message}")
-#     return message == message.author and "has ended" in message.content
 
 ''' Events ''' 
 @bot.listen()
@@ -133,26 +131,23 @@ async def switchtab(ctx,tab):
 #DELETE to clear whole tab
 #Wipe a sheet clear with option to duplicate to a hidden sheet a backup?
 
-# @bot.command()
-# async def cleartab(ctx):
-#     await ctx.send("Are you sure you want to clear this tab? Enter 'Y' or 'N'")
-#     @bot.event
-#     async def on_message(message):
-#         if message.author == bot.user:
-#             return
-#         if message.content == "Y":
-#             global worksheet
-#             worksheet.clear()
-#             await ctx.send("Confirmed clearing of tab")
-#             return
-#         elif message.content == "N":
-#             await ctx.send("Cancelled clearing of tab")
-#             return
-#         else:
-#             await ctx.send("You didn't enter a valid value, try 'Y' or 'N' ")
-#             return 
+@bot.command()
+async def cleartab(ctx):
+    await ctx.send("Are you sure you want to clear this tab? Y or N")
 
+    async def confirmation(m):
+        print(f"Message author is {ctx.message.author} and ctx author is {ctx.author}")
+        return m.content.lower() in ["y", "n"] and ctx.message.author == ctx.author
 
+    msg = await bot.wait_for('message', check=confirmation)
+
+    if msg.content.lower() == "y":
+        global worksheet
+        worksheet.clear()
+        await ctx.send("Tab cleared") 
+    elif msg.content.lower() == "n":
+        await ctx.send("Cancelled clearing of tab")
+        raise ValueError("Cancelled")
 
 #---Cells---
 
